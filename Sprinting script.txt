@@ -1,0 +1,54 @@
+Sprint script --------
+
+
+local mouse = game.Players.LocalPlayer:GetMouse()
+local running = false
+
+function getTool()
+	for _, kid in ipairs(script.Parent:GetChildren()) do
+		if kid.className == "Tool" then return kid end
+	end
+	return nil
+end
+
+
+mouse.KeyDown:connect(function(key) 
+	key = string.lower(key)
+	if string.byte(key) == 48 then 
+		running = true 
+		local keyConnection = mouse.KeyUp:connect(function(key) 
+			if string.byte(key) == 48 then
+				running = false
+			end
+		end)
+		for i = 1,5 do 
+			game.Workspace.CurrentCamera.FieldOfView = (70+(i*2))
+			wait()
+		end
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 30
+		repeat wait () until running == false
+		keyConnection:disconnect()
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+		for i = 1,5 do
+			game.Workspace.CurrentCamera.FieldOfView = (80-(i*2))
+			wait()
+		end
+	end
+end)
+
+
+Sprint importer ---------
+
+function onPlayerEntered(player)
+	repeat wait () until player.Character ~= nil
+	local s = script.SprintScript:clone()
+	s.Parent = player.Character
+	s.Disabled = false
+	player.CharacterAdded:connect(function(char)
+		local s = script.SprintScript:clone()
+		s.Parent = char
+		s.Disabled = false
+	end) 
+end
+
+game.Players.PlayerAdded:connect(onPlayerEntered)
